@@ -88,7 +88,7 @@ public class HeaderPositionCalculator {
 
   public Rect getHeaderBounds(RecyclerView recyclerView, View header, View firstView, boolean firstHeader) {
     int orientation = mOrientationProvider.getOrientation(recyclerView);
-    Rect bounds = getDefaultHeaderOffset(recyclerView, header, firstView, orientation);
+    Rect bounds = getDefaultHeaderOffset(header, firstView, orientation);
 
     if (firstHeader && isStickyHeaderBeingPushedOffscreen(recyclerView, header)) {
       View viewAfterNextHeader = getFirstViewUnobscuredByHeader(recyclerView, header);
@@ -101,20 +101,18 @@ public class HeaderPositionCalculator {
     return bounds;
   }
 
-  private Rect getDefaultHeaderOffset(RecyclerView recyclerView, View header, View firstView, int orientation) {
+  private Rect getDefaultHeaderOffset(View header, View firstView, int orientation) {
     int translationX, translationY;
     Rect headerMargins = mDimensionCalculator.getMargins(header);
     if (orientation == LinearLayoutManager.VERTICAL) {
       translationX = firstView.getLeft() + headerMargins.left;
-      translationY = Math.max(
-          firstView.getTop() - header.getHeight() - headerMargins.bottom,
-          getListTop(recyclerView) + headerMargins.top);
+      translationY = firstView.getTop() - header.getHeight() - headerMargins.bottom;
     } else {
       translationY = firstView.getTop() + headerMargins.top;
-      translationX = Math.max(
-          firstView.getLeft() - header.getWidth() - headerMargins.right,
-          getListLeft(recyclerView) + headerMargins.left);
+      translationX = firstView.getLeft() - header.getWidth() - headerMargins.right;
     }
+
+
 
     return new Rect(translationX, translationY, translationX + header.getWidth(),
         translationY + header.getHeight());
